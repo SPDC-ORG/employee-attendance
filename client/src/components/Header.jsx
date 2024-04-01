@@ -1,12 +1,18 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+
+
+
+
 const Header = () => {
+  const navigate = useNavigate();
+  function logout(){
+    navigate('/')
+  }
   return (
    <div className='w-[100%] h-[60px] bg-white border flex justify-between	 items-center flex-row'>
     <img src="" alt="Logo" className='ml-[60px] w-[100px]'/>
-    <NavLink to="/employe/login">
-    <button className='mr-[60px]'><img className='w-[20px]' src="" alt="SignOut" /></button>
-    </NavLink>
+    <button onClick={logout} className='mr-[60px]'>LogOut</button>
    </div>
   )
 }

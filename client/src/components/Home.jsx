@@ -1,57 +1,74 @@
-import React from 'react'
+import React, { useState } from 'react';
+import Header from './Header';
+
+const date = '28 March 2024';
+const TimeOne = {
+    day: 'Thursday 10:00am To 6:30pm',
+};
+const TimeTwo = "19:14:32";
 
 const Home = () => {
-    const signInbtn = document.getElementById('signInbtn');
-    const signIn = () =>{
-        if(signInbtn.innerHTML === 'Sign Out'){
-            signInbtn.innerHTML = 'Sign In' 
-        }else{
-            signInbtn.innerHTML = 'Sign Out'
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [username, setUsername] = useState('');
+    
+    const handleSignInOut = async () => {
+        // Toggle sign-in state
+        setIsSignedIn(prevState => !prevState);
+
+        // Make HTTP request to backend server
+        try {
+            const response = await fetch('http://localhost:5000/employeesignin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ time: new Date(), date: date, username: username }),
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to sign in');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle error (e.g., display error message to user)
         }
-    }
+    };
+
     return (
-        <div className='h-screen bg-white flex flex-col lg:flex-row items-center justify-around'>
-
-            <section className='left-section'>
-                <div>
-                    <h1 className='text-2xl font-[600] mb-5'>Good morning bency</h1>
-                    <p className='text-[20px] mb-5 text-gray-600'>"Morning! Ready to rock some code today? Let's crush it! 💻🔥 #CodeOn"</p>
-                </div>
-                <div className="shadow-md w-[450px] h-64 rounded-lg flex flex-col justify-center pl-10 pr-10 bg-white">
-                    <p className="text-gray-700 mb-5">28 March 2024</p>
-                    <p className="text-gray-700 mb-5">Thursday | 10:00am To 6:30pm</p>
-                    <p className="text-gray-700 mb-5">19:14:32</p>
-                    <div className='flex flex-row h-[40px] w-[auto]'>
-                    <button id='signInbtn' onClick={signIn} className="bg-[#3BE8A9] mr-10 hover:bg-[#38AD83] text-black font-[500] py-2 px-4 rounded">Sign in</button>
-                    <button id='signInbtn'  className="bg-orange-400 mr-10 hover:bg-orange-500 text-black font-[500] py-2 px-4 rounded">Break</button>
-                    <button id='signInbtn' className="bg-red-500 hover:bg-red-600 text-white font-[500] py-2 px-4 rounded">Leave</button>
+        <div className='h-svh bg-white flex flex-col'>
+            <Header />
+            <div className='h-screen bg-white flex items-center justify-center'>
+                <section className='left-section'>
+                    <div className="shadow-md w-[450px] h-64 rounded-lg flex flex-col justify-center pl-10 pr-10 bg-white">
+                       
+                        <p className="text-gray-700 mb-5">{date}</p>
+                        <p className="text-gray-700 mb-5">{TimeOne.day}</p>
+                        <p className="text-gray-700 mb-5">{TimeTwo}</p>
+                        <div className='flex flex-row h-[40px] w-[auto]'>
+                            <button
+                                className={`bg-${isSignedIn ? 'red' : '#3BE8A9'} mr-10 hover:bg-${isSignedIn ? 'red' : '#38AD83'} text-black font-[500] py-2 px-4 rounded`}
+                                onClick={handleSignInOut}
+                            >
+                                {isSignedIn ? 'Sign out' : 'Sign in'}
+                            </button>
+                            {isSignedIn && (
+                                <button
+                                    className="bg-orange-400 mr-10 hover:bg-orange-500 text-black font-[500] py-2 px-4 rounded"
+                                >
+                                    Break
+                                </button>
+                            )}
+                            <button
+                                className="bg-red-500 hover:bg-red-600 text-white font-[500] py-2 px-4 rounded"
+                            >
+                                Leave
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </section>
-
-            <section className='right-section'>
-                <div className='h-[400px] w-[360px] shadow-lg rounded-lg flex flex-col items-center justify-center'>
-                    <p className='text-[20px] font-[400] mb-10'>Upcoming Holidays</p>
-
-                   <div className='bg-gray-100 p-5 mb-5 w-[300px] rounded-lg hover:shadow-md'>
-                   <p>29 Mar Friday</p>
-                    <p>Good Friday</p>
-                   </div>
-
-                   <div className='bg-gray-100 p-5 mb-5 w-[300px] rounded-lg hover:shadow-md'>
-                   <p>29 Mar Friday</p>
-                    <p>Good Friday</p>
-                   </div>
-
-                   <div className='bg-gray-100 p-5 mb-5 w-[300px] rounded-lg hover:shadow-md'>
-                   <p>29 Mar Friday</p>
-                    <p>Good Friday</p>
-                   </div>
-                   
-                </div>
-            </section>
+                </section>
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default Home
+export default Home;
